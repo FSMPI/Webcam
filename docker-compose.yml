@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  ffmpeg:
+    build: ./Dockerfiles/ffmpeg
+    container_name: ffmpeg
+    links:
+      - "rtmpserver"
+    depends_on:
+      - "rtmpserver"
+    restart: unless-stopped
+    env_file:
+      - ./.env
+
+  rtmpserver:
+      build: ./Dockerfiles/rtmpserver
+      container_name: nginxRTMP
+      ports:
+        - 1935:1935
+        - 8080:8080
+      restart: unless-stopped
+      volumes:
+        - ./stream:/stream/hls
+        - ./live:/stream/live
